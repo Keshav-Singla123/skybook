@@ -24,7 +24,10 @@ html {
 body {
   margin: 0;
   color: var(--ink);
-  background: var(--surface);
+  background:
+    radial-gradient(circle at 12% 8%, rgba(14, 165, 233, 0.12), transparent 28rem),
+    radial-gradient(circle at 82% 18%, rgba(245, 158, 11, 0.1), transparent 24rem),
+    var(--surface);
   font-family: var(--font-dm-sans), system-ui, sans-serif;
 }
 
@@ -40,14 +43,34 @@ a {
 
 .sky-card {
   border: 1px solid rgba(14, 165, 233, 0.12);
-  background: rgba(255, 255, 255, 0.92);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 255, 0.92));
   box-shadow: var(--card-shadow);
-  transition: transform 180ms ease, box-shadow 180ms ease;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
 
 .sky-card:hover {
-  box-shadow: 0 14px 42px rgba(14, 165, 233, 0.14);
+  border-color: rgba(14, 165, 233, 0.28);
+  box-shadow: 0 18px 52px rgba(12, 20, 69, 0.12);
   transform: translateY(-2px);
+}
+
+.glass-panel {
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(239, 249, 255, 0.86));
+  box-shadow: 0 30px 90px rgba(12, 20, 69, 0.22);
+  backdrop-filter: blur(18px);
+}
+
+.hero-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(to bottom, black, transparent 80%);
+}
+
+.route-line {
+  background-image: linear-gradient(90deg, rgba(14, 165, 233, 0.12), rgba(14, 165, 233, 0.9), rgba(245, 158, 11, 0.85));
 }
 
 .fade-in-up {
@@ -60,6 +83,11 @@ a {
 
 .cloud {
   animation: drift 24s linear infinite;
+}
+
+.orbital-plane {
+  animation: orbitalPlane 12s linear infinite;
+  transform-origin: 50% 50%;
 }
 
 .seat-pulse {
@@ -84,6 +112,11 @@ a {
 @keyframes drift {
   from { transform: translateX(-15%); }
   to { transform: translateX(115%); }
+}
+
+@keyframes orbitalPlane {
+  from { transform: rotate(0deg) translateX(96px) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(96px) rotate(-360deg); }
 }
 
 @keyframes seatPulse {

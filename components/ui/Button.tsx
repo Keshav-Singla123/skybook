@@ -13,10 +13,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({ className, v
     <button
       ref={ref}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition disabled:pointer-events-none disabled:opacity-50",
+        "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50",
         "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0EA5E9]",
-        variant === "primary" && "bg-[#0EA5E9] text-white shadow-lg shadow-sky-500/20 hover:bg-[#0369A1]",
-        variant === "secondary" && "border border-sky-200 bg-white text-[#0C1445] hover:bg-sky-50",
+        variant === "primary" && "bg-gradient-to-r from-[#0EA5E9] to-[#0369A1] text-white shadow-lg shadow-sky-500/25 hover:shadow-xl hover:shadow-sky-500/30",
+        variant === "secondary" && "border border-sky-200 bg-white/95 text-[#0C1445] shadow-sm hover:bg-sky-50",
         variant === "ghost" && "text-[#0C1445] hover:bg-sky-50",
         variant === "danger" && "bg-[#EF4444] text-white hover:bg-red-600",
         size === "sm" && "h-9 px-3 text-sm",

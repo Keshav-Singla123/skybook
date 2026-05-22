@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { FormEvent, useMemo, useState } from "react";
-import { CalendarDays, Search } from "lucide-react";
+import { CalendarDays, Search, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Select } from "@/components/ui/Input";
 import { INDIAN_CITIES, type SeatClass, type SearchQuery } from "@/types";
@@ -45,7 +45,19 @@ export function FlightSearch({ compact = false }: FlightSearchProps) {
   }
 
   return (
-    <div className="rounded-2xl bg-white/95 p-4 shadow-2xl shadow-sky-950/10 backdrop-blur md:p-5">
+    <div className="glass-panel rounded-2xl p-4 md:p-5">
+      {!compact ? (
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div>
+            <p className="flex items-center gap-2 text-xs font-bold uppercase text-[#0369A1]"><Sparkles className="h-3.5 w-3.5" /> Smart fare finder</p>
+            <h2 className="mt-1 font-display text-2xl font-extrabold text-[#0C1445]">Book your next flight</h2>
+          </div>
+          <div className="hidden rounded-2xl bg-[#0C1445] px-4 py-3 text-right text-white sm:block">
+            <p className="text-xs text-sky-100">Live inventory</p>
+            <p className="font-display text-lg font-bold">30 rows</p>
+          </div>
+        </div>
+      ) : null}
       <form onSubmit={submit} className="grid gap-4 md:grid-cols-6">
         <Field label="Origin">
           <Select value={form.origin} onChange={(event) => update("origin", event.target.value)}>
@@ -82,7 +94,7 @@ export function FlightSearch({ compact = false }: FlightSearchProps) {
           {recentSearches.map((recent) => (
             <button
               key={`${recent.origin}-${recent.destination}-${recent.date}-${recent.class}`}
-              className="rounded-full border border-sky-100 bg-sky-50 px-3 py-1 font-medium text-[#0369A1]"
+              className="rounded-full border border-sky-100 bg-white/80 px-3 py-1 font-medium text-[#0369A1] shadow-sm transition hover:border-sky-300 hover:bg-sky-50"
               onClick={() => setForm(recent)}
             >
               {recent.origin} to {recent.destination}, {recent.date}

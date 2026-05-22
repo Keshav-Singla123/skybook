@@ -39,10 +39,10 @@ export function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-sky-100 bg-white/90 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-white/50 bg-white/82 shadow-sm shadow-sky-950/5 backdrop-blur-xl">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2 font-display text-xl font-extrabold text-[#0C1445]">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0C1445] text-white">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0C1445] to-[#0EA5E9] text-white shadow-lg shadow-sky-900/20">
             <Plane className="h-5 w-5" />
           </span>
           SkyBook
