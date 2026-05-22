@@ -54,16 +54,29 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <section className="mx-auto grid max-w-7xl gap-5 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
-        {features.map(({ Icon, title, copy }, index) => (
-          <article key={title} className="sky-card fade-in-up rounded-2xl p-6" style={{ animationDelay: `${index * 0.1}s` }}>
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-50 text-[#0369A1]">
-              <Icon className="h-6 w-6" />
-            </div>
-            <h2 className="mt-4 font-display text-xl font-bold text-[#0C1445]">{title}</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">{copy}</p>
-          </article>
-        ))}
+      <section className="bg-[#F9FAFB] px-3 py-12 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-7 lg:grid-cols-[0.9fr_1.4fr] lg:items-start">
+          <div className="pt-2">
+            <p className="text-sm font-bold uppercase text-[#0369A1]">Why it works</p>
+            <h2 className="mt-3 font-display text-3xl font-extrabold text-[#0C1445]">Built around the booking moments that usually go wrong.</h2>
+            <p className="mt-4 max-w-md text-sm leading-6 text-slate-600">Seat availability, cancellation windows, and offline booking access are handled as product flows instead of just database rows.</p>
+          </div>
+          <div className="space-y-4">
+            {features.map(({ Icon, title, copy }, index) => (
+              <article key={title} className="sky-card fade-in-up rounded-2xl p-5 sm:p-6" style={{ animationDelay: `${index * 0.1}s`, marginLeft: index === 1 ? "18px" : "0" }}>
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-[#0369A1]">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-display text-xl font-bold text-[#0C1445]">{title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-slate-600">{copy}</p>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
       </section>
     </main>
   );

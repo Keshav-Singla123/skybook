@@ -30,7 +30,7 @@ export function FlightSearch({ compact = false }: FlightSearchProps) {
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (form.origin === form.destination) {
-      toast("Origin and destination must be different.", "error");
+      toast("Origin and destination can't be the same.", "error");
       return;
     }
     setSearchQuery(form);

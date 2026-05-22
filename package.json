@@ -1,12 +1,14 @@
 {
   "name": "skybook",
   "version": "0.1.0",
+  "description": "skybook - flight booking app",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:reset": "echo 'drop and re-run migrations manually in supabase dashboard'"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",
@@ -17,6 +19,8 @@
     "next-pwa": "^5.6.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-hot-toast": "^2.6.0",
+    "react-hot-toast": "^2.6.0",
     "tailwind-merge": "^3.6.0",
     "zustand": "^5.0.13"
   },

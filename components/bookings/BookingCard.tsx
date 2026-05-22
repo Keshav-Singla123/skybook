@@ -35,14 +35,14 @@ export function BookingCard({ booking, onCancelled }: BookingCardProps) {
     const { data: authData } = await supabase.auth.getUser();
     if (!authData.user) {
       setLoading(false);
-      toast("Please log in again to cancel.", "error");
+      toast("Your session expired. Log in again to cancel this.", "error");
       return;
     }
     const { data, error } = await supabase.rpc("cancel_booking", { p_booking_id: booking.id, p_user_id: authData.user.id });
     setLoading(false);
     setOpen(false);
     if (error || !isRpcResult(data) || !data.success) {
-      toast(error?.message ?? (isRpcResult(data) && !data.success ? data.error : "Could not cancel booking"), "error");
+      toast(error?.message ?? (isRpcResult(data) && !data.success ? data.error : "Couldn't cancel this booking. Try again in a minute."), "error");
       return;
     }
     resetBooking();

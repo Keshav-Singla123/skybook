@@ -26,7 +26,7 @@ export default function LoginPage() {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
     if (error) {
-      toast(error.message, "error");
+      toast("Wrong email or password.", "error");
       return;
     }
     setSession(data.session);

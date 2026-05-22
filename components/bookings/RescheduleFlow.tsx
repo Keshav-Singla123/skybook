@@ -30,10 +30,10 @@ export function RescheduleFlow({ booking, alternatives }: RescheduleFlowProps) {
     const { error: insertError } = await supabase.from("reschedules").insert({ booking_id: booking.id, old_flight_id: oldFlight.id, new_flight_id: selected.id, fee_charged: fee });
     setLoading(false);
     if (updateError || insertError) {
-      toast(updateError?.message ?? insertError?.message ?? "Reschedule failed", "error");
+      toast(updateError?.message ?? insertError?.message ?? "Couldn't move this booking to the new flight.", "error");
       return;
     }
-    toast("Flight rescheduled successfully", "success");
+    toast("Flight moved. Check My Bookings for the new timing.", "success");
     router.push("/my-bookings");
   }
 

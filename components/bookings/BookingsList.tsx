@@ -16,6 +16,7 @@ export function BookingsList({ bookings }: { bookings: BookingWithDetails[] }) {
     setCachedBookings(bookings);
   }, [bookings, setCachedBookings]);
 
+  // TODO: add pagination here if bookings list gets long
   if (items.length === 0) {
     return (
       <section className="sky-card rounded-2xl p-10 text-center">

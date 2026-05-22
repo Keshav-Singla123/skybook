@@ -22,10 +22,10 @@ export default function RegisterPage() {
     const { error } = await supabase.auth.signUp({ email, password });
     setLoading(false);
     if (error) {
-      toast(error.message, "error");
+      toast(error.message.includes("already") ? "That email is already registered." : "Couldn't create the account. Try once more.", "error");
       return;
     }
-    toast("Account created. Check email confirmation settings in Supabase.", "success");
+    toast("Account created. You can log in now.", "success");
     router.push("/login");
   }
 

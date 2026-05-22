@@ -1,80 +1,110 @@
-# SkyBook - Flight Management
+# SkyBook
 
-SkyBook is a production-ready flight management web app built for a competitive internship assignment. It supports flight search, real-time seat selection, authenticated booking, cancellation, rescheduling, offline booking access, and PWA install support.
+Flight booking app built with Next.js, Supabase and Zustand.
 
-Live demo: add your Vercel production URL here after deployment.
+Live demo: add Vercel link here after deployment.
 
-## Tech Stack
+## What it does
 
-- Next.js App Router: server components for data fetching and client components only where interactivity is needed.
-- TypeScript strict mode: shared domain interfaces live in `types/index.ts`.
-- Supabase: PostgreSQL, Auth, RLS, RPC functions, and Realtime seat updates.
-- Zustand: two persisted stores, separated by booking flow state and user/offline booking state.
-- Tailwind CSS: tokenized visual system in `app/globals.css`.
-- next-pwa: production-only service worker, manifest, install prompt, and offline fallback.
+SkyBook lets a user search flights, pick a seat from a live seat map, book with passenger details, see their PNR, cancel a booking, and reschedule to another flight on the same route.
 
-## Local Setup
+The seat map was the trickiest part. Spent way too long on the realtime sync - turns out you need to re-subscribe when the flight changes and clean up the channel properly when leaving the page.
+
+## Stack
+
+- Next.js App Router + TypeScript
+- Tailwind CSS
+- Supabase Auth, Postgres, RLS, RPC and Realtime
+- Zustand with persist middleware
+- next-pwa for offline page / install prompt
+
+I also added `react-hot-toast` while trying notification options, but the app currently uses the small custom toast component in `components/ui/Toast.tsx`.
+
+## Local setup
+
+You'll need a Supabase project. Create one at supabase.com, free tier works fine.
 
 ```bash
-git clone <your-repo-url>
-cd skybook
 npm install
 cp .env.example .env.local
 npm run dev
 ```
 
-Fill `.env.local` with:
+Put these in `.env.local`:
 
-```bash
+```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-## Supabase Setup
+Then open:
 
-1. Create a Supabase project.
-2. Open SQL Editor and run `supabase/migrations/001_initial_schema.sql`.
-3. Run `supabase/seed/seed.sql`.
-4. In Supabase Dashboard, enable Realtime for the `seats` table.
-5. Create a manual test user in Auth.
+```text
+http://localhost:3000
+```
 
-Suggested test credentials:
+## Database setup
 
-- Email: `demo@skybook.app`
-- Password: `SkyBook@12345`
+In Supabase SQL Editor:
 
-## Zustand Architecture
+1. Run `supabase/migrations/001_initial_schema.sql`
+2. Run `supabase/seed/seed.sql`
+3. Enable realtime for the `seats` table from Database > Publications
+4. Create a user manually from Authentication > Users
 
-`useFlightStore` owns the booking journey: search query, recent searches, selected flight, selected seat, optimistic seat id, current step, and passenger form. It persists the booking flow so refreshes do not destroy progress.
+Test user I used:
 
-`useUserStore` owns authenticated-user concerns: session, user, and cached bookings. Persisted data is intentionally narrow: only `session.access_token` and `cachedBookings`.
+```text
+demo@skybook.app
+SkyBook@12345
+```
 
-The passenger form persists name, nationality, and date of birth, but excludes `passport_no` through `partialize` because passport numbers are sensitive and should not sit in localStorage.
+Seeded flights are relative to `now()`, so search 2-7 days ahead after running the seed.
 
-Optimistic seat selection stores `optimisticSeatId` immediately when a seat is clicked and again before `reserve_seat` runs. Supabase Realtime refreshes the map when another booking changes seat availability.
+## Store notes
 
-## Database Design
+There are two Zustand stores:
 
-`reserve_seat` uses `SELECT ... FOR UPDATE` on the selected seat row. That row lock prevents two users from booking the same seat at the same time.
+- `useFlightStore`: search query, selected flight/seat, passenger form, current booking step
+- `useUserStore`: user/session info and cached bookings for offline reading
 
-Cancellation rules are enforced twice. The `cancel_booking` RPC checks the two-hour departure window before changing status, and the `bookings_cancellation_window` trigger blocks direct table updates that try to bypass that rule.
+Passport number is deliberately removed from persisted state. I missed this at first, then moved it into the `partialize` config because saving passport numbers to localStorage is not a good idea.
 
-RLS is enabled on every table. Flights and seats are publicly readable; bookings, passengers, and reschedules are scoped to `auth.uid()`.
+Optimistic seat selection uses `optimisticSeatId` so the UI reacts immediately. The actual booking still goes through `reserve_seat`, which locks the row in Postgres.
 
-## Known Trade-Offs
+## Database notes
 
-- Payments are represented as a confirmation step only; a real gateway such as Razorpay or Stripe would be next.
-- Rescheduling keeps the same seat id for simplicity. A production airline flow would require selecting a seat on the new aircraft.
-- The README includes a placeholder for the Lighthouse PWA screenshot and Vercel URL because those are generated after deployment.
-- Seed data includes one flight per route direction; add more same-route flights to make rescheduling richer.
+`reserve_seat` uses `SELECT ... FOR UPDATE` so two users cannot book the same seat at once.
 
-## Lighthouse PWA Screenshot
+Cancellation is checked in two places:
 
-Add the Lighthouse PWA screenshot here after running the deployed Vercel app through Lighthouse.
+- `cancel_booking` RPC
+- database trigger on `bookings`
 
-## Submission Checklist
+That way even a direct update cannot cancel inside the 2-hour window.
 
-- `.env.example` included.
-- Complete Supabase migration and seed SQL included.
-- Flight search, booking, seat map, cancellation, rescheduling, Zustand stores, PWA manifest, offline page, and install prompt implemented.
-- Deploy on Vercel and add the production URL before final submission.
+## Known issues / rough edges
+
+- The seat map scroll on iOS Safari is a bit janky - ran out of time to fix.
+- Reschedule doesn't handle same-price flights perfectly, shows ₹0 fee which is correct but looks weird.
+- PWA install prompt doesn't show on desktop Chrome, only mobile.
+- Seed data only has one flight for some route directions, so reschedule needs an extra same-route flight for a better demo.
+- The middleware warning appears on Next 16 because `middleware.ts` is moving toward `proxy.ts`, but the assignment asked for middleware.
+
+## What I'd do differently
+
+- Would add server actions instead of client-side RPC calls for better security.
+- The Zustand store grew bigger than I expected - would split into smaller slices.
+- Should add proper page-level error boundaries instead of relying on a shared global one.
+- Would make rescheduling choose a new seat too, because real flights have different seat maps.
+
+## Useful commands
+
+```bash
+npm run dev
+npm run lint
+npm run build
+npm run db:reset
+```
+
+`db:reset` only prints a reminder. I reset from the Supabase dashboard during development.

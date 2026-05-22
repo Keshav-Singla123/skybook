@@ -54,12 +54,12 @@ export default function BookingPage({ params }: BookingPageProps) {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!flight || !activeSeat) {
-      toast("Flight or seat selection is missing.", "error");
+      toast("Something got lost from the booking state. Pick the seat again.", "error");
       router.push(`/seats/${flightId}`);
       return;
     }
     if (!passengerForm.full_name.trim() || !passengerForm.passport_no.trim() || !passengerForm.nationality.trim() || !passengerForm.dob) {
-      toast("Complete every passenger field before booking.", "error");
+      toast("Looks like some fields are missing.", "error");
       return;
     }
     setLoading(true);
@@ -84,11 +84,11 @@ export default function BookingPage({ params }: BookingPageProps) {
     });
     setLoading(false);
     if (error || !isRpcResult(data) || !data.success) {
-      toast(error?.message ?? (isRpcResult(data) && !data.success ? data.error : "Seat no longer available"), "error");
+      toast(error?.message ?? (isRpcResult(data) && !data.success ? data.error.replace("Seat no longer available", "Someone just grabbed that seat. Pick another one.") : "Someone just grabbed that seat. Pick another one."), "error");
       router.push(`/seats/${flight.id}`);
       return;
     }
-    toast("Booking confirmed", "success");
+    toast("You're booked! Check your confirmation page.", "success");
     setCurrentStep("confirmation");
     router.push(`/confirmation/${data.booking_id ?? ""}`);
   }

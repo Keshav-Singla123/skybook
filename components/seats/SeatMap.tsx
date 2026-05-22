@@ -49,6 +49,7 @@ export function SeatMap({ flightId, initialSeats, yourSeatId, readOnly = false }
 
   useEffect(() => {
     const supabase = createClient();
+    // supabase realtime closes if component unmounts mid-flight, keep cleanup explicit
     const channel = supabase
       .channel(`seats-${flightId}`)
       .on(
@@ -118,7 +119,7 @@ export function SeatMap({ flightId, initialSeats, yourSeatId, readOnly = false }
             disabled={!selected}
             onClick={() => {
               if (!selected) {
-                toast("Select a seat first.", "error");
+                toast("Pick a seat first, then we can move on.", "error");
                 return;
               }
               setCurrentStep("passenger");
