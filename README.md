@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SkyBook - Flight Management
 
-## Getting Started
+SkyBook is a production-ready flight management web app built for a competitive internship assignment. It supports flight search, real-time seat selection, authenticated booking, cancellation, rescheduling, offline booking access, and PWA install support.
 
-First, run the development server:
+Live demo: add your Vercel production URL here after deployment.
+
+## Tech Stack
+
+- Next.js App Router: server components for data fetching and client components only where interactivity is needed.
+- TypeScript strict mode: shared domain interfaces live in `types/index.ts`.
+- Supabase: PostgreSQL, Auth, RLS, RPC functions, and Realtime seat updates.
+- Zustand: two persisted stores, separated by booking flow state and user/offline booking state.
+- Tailwind CSS: tokenized visual system in `app/globals.css`.
+- next-pwa: production-only service worker, manifest, install prompt, and offline fallback.
+
+## Local Setup
 
 ```bash
+git clone <your-repo-url>
+cd skybook
+npm install
+cp .env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Fill `.env.local` with:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Supabase Setup
 
-## Learn More
+1. Create a Supabase project.
+2. Open SQL Editor and run `supabase/migrations/001_initial_schema.sql`.
+3. Run `supabase/seed/seed.sql`.
+4. In Supabase Dashboard, enable Realtime for the `seats` table.
+5. Create a manual test user in Auth.
 
-To learn more about Next.js, take a look at the following resources:
+Suggested test credentials:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Email: `demo@skybook.app`
+- Password: `SkyBook@12345`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Zustand Architecture
 
-## Deploy on Vercel
+`useFlightStore` owns the booking journey: search query, recent searches, selected flight, selected seat, optimistic seat id, current step, and passenger form. It persists the booking flow so refreshes do not destroy progress.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+`useUserStore` owns authenticated-user concerns: session, user, and cached bookings. Persisted data is intentionally narrow: only `session.access_token` and `cachedBookings`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The passenger form persists name, nationality, and date of birth, but excludes `passport_no` through `partialize` because passport numbers are sensitive and should not sit in localStorage.
+
+Optimistic seat selection stores `optimisticSeatId` immediately when a seat is clicked and again before `reserve_seat` runs. Supabase Realtime refreshes the map when another booking changes seat availability.
+
+## Database Design
+
+`reserve_seat` uses `SELECT ... FOR UPDATE` on the selected seat row. That row lock prevents two users from booking the same seat at the same time.
+
+Cancellation rules are enforced twice. The `cancel_booking` RPC checks the two-hour departure window before changing status, and the `bookings_cancellation_window` trigger blocks direct table updates that try to bypass that rule.
+
+RLS is enabled on every table. Flights and seats are publicly readable; bookings, passengers, and reschedules are scoped to `auth.uid()`.
+
+## Known Trade-Offs
+
+- Payments are represented as a confirmation step only; a real gateway such as Razorpay or Stripe would be next.
+- Rescheduling keeps the same seat id for simplicity. A production airline flow would require selecting a seat on the new aircraft.
+- The README includes a placeholder for the Lighthouse PWA screenshot and Vercel URL because those are generated after deployment.
+- Seed data includes one flight per route direction; add more same-route flights to make rescheduling richer.
+
+## Lighthouse PWA Screenshot
+
+Add the Lighthouse PWA screenshot here after running the deployed Vercel app through Lighthouse.
+
+## Submission Checklist
+
+- `.env.example` included.
+- Complete Supabase migration and seed SQL included.
+- Flight search, booking, seat map, cancellation, rescheduling, Zustand stores, PWA manifest, offline page, and install prompt implemented.
+- Deploy on Vercel and add the production URL before final submission.
