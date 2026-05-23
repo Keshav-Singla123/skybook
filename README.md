@@ -98,7 +98,7 @@ Use this demo account to review the app end to end:
 - Password: democheck
 
 This account is meant for quick recruiter testing of search, booking, seat selection, cancellation, and reschedule flows.
-Demo flights are seeded across the existing five airports from May 23 to May 31. If a particular search shows no flight, try another date within that window, because not every route runs on every single day.
+Demo flights are seeded for every valid route between the five existing airports on each day from May 23 to May 31, so searches on 24, 25, and the rest of the window should return results for any origin-destination pair.
 
 ## Useful Commands
 
