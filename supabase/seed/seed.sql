@@ -29,8 +29,8 @@ with inserted_flights as (
       'SB' || lpad((500 + day_offset * 20 + route_rank)::text, 3, '0') as flight_no,
       origin,
       destination,
-      (date '2026-05-23' + day_offset) + make_interval(hours => 6 + ((route_rank - 1) % 9), mins => ((route_rank - 1) * 10) % 60) as departs_at,
-      (date '2026-05-23' + day_offset) + make_interval(hours => 8 + ((route_rank - 1) % 9), mins => ((route_rank - 1) * 10) % 60 + 20 + ((route_rank - 1) % 3) * 5) as arrives_at,
+      (date '2026-05-23' + day_offset) + make_interval(hours => (6 + ((route_rank - 1) % 9))::int, mins => (((route_rank - 1) * 10) % 60)::int) as departs_at,
+      (date '2026-05-23' + day_offset) + make_interval(hours => (8 + ((route_rank - 1) % 9))::int, mins => ((((route_rank - 1) * 10) % 60) + 20 + ((route_rank - 1) % 3) * 5)::int) as arrives_at,
       case when (route_rank % 3) = 0 then 'Airbus A321neo' when (route_rank % 3) = 1 then 'Airbus A320neo' else 'Boeing 737 MAX' end as aircraft_type,
       case when ((day_offset + route_rank) % 11) = 0 then 'boarding' when ((day_offset + route_rank) % 13) = 0 then 'delayed' else 'scheduled' end as status,
       3800 + (route_rank * 190) + (day_offset * 85) + case when origin in ('DEL', 'BOM') then 700 else 0 end as base_price
