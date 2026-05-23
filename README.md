@@ -90,6 +90,15 @@ npm run dev
 
 Open `http://localhost:3000` in your browser.
 
+## Demo Access
+
+Use this demo account to review the app end to end:
+
+- Email: demo123@gmail.com
+- Password: democheck
+
+This account is meant for quick recruiter testing of search, booking, seat selection, cancellation, and reschedule flows.
+
 ## Useful Commands
 
 ```bash
