@@ -3,14 +3,26 @@ truncate table public.reschedules, public.passengers, public.bookings, public.se
 with inserted_flights as (
   insert into public.flights (flight_no, origin, destination, departs_at, arrives_at, aircraft_type, status, base_price)
   values
-    ('SB101','DEL','BOM', now() + interval '2 days' + interval '08 hours', now() + interval '2 days' + interval '10 hours 10 minutes', 'Airbus A320neo', 'scheduled', 6200),
-    ('SB102','BOM','DEL', now() + interval '2 days' + interval '14 hours', now() + interval '2 days' + interval '16 hours 05 minutes', 'Boeing 737 MAX', 'scheduled', 6400),
-    ('SB203','DEL','BLR', now() + interval '3 days' + interval '09 hours 30 minutes', now() + interval '3 days' + interval '12 hours 10 minutes', 'Airbus A321neo', 'boarding', 7800),
-    ('SB204','BLR','DEL', now() + interval '4 days' + interval '18 hours', now() + interval '4 days' + interval '20 hours 45 minutes', 'Boeing 737', 'scheduled', 7550),
-    ('SB305','BOM','GOI', now() + interval '5 days' + interval '07 hours 45 minutes', now() + interval '5 days' + interval '09 hours', 'ATR 72', 'scheduled', 4300),
-    ('SB306','GOI','BOM', now() + interval '5 days' + interval '20 hours 15 minutes', now() + interval '5 days' + interval '21 hours 30 minutes', 'ATR 72', 'delayed', 4100),
-    ('SB407','DEL','HYD', now() + interval '6 days' + interval '10 hours', now() + interval '6 days' + interval '12 hours 20 minutes', 'Airbus A320neo', 'scheduled', 6900),
-    ('SB408','HYD','DEL', now() + interval '7 days' + interval '16 hours 30 minutes', now() + interval '7 days' + interval '18 hours 50 minutes', 'Boeing 737', 'scheduled', 7050)
+    ('SB501', 'DEL', 'BOM', now()::date + 0 + interval '08 hours 00 minutes', now()::date + 0 + interval '10 hours 10 minutes', 'Airbus A320neo', 'scheduled', 6200),
+    ('SB502', 'BOM', 'DEL', now()::date + 0 + interval '14 hours 30 minutes', now()::date + 0 + interval '16 hours 35 minutes', 'Boeing 737 MAX', 'scheduled', 6400),
+    ('SB503', 'DEL', 'BLR', now()::date + 1 + interval '09 hours 20 minutes', now()::date + 1 + interval '12 hours 00 minutes', 'Airbus A321neo', 'boarding', 7800),
+    ('SB504', 'BLR', 'DEL', now()::date + 1 + interval '18 hours 10 minutes', now()::date + 1 + interval '20 hours 55 minutes', 'Boeing 737', 'scheduled', 7550),
+    ('SB505', 'DEL', 'HYD', now()::date + 2 + interval '07 hours 45 minutes', now()::date + 2 + interval '10 hours 05 minutes', 'Airbus A320neo', 'scheduled', 6900),
+    ('SB506', 'HYD', 'DEL', now()::date + 2 + interval '16 hours 30 minutes', now()::date + 2 + interval '18 hours 50 minutes', 'Boeing 737', 'boarding', 7050),
+    ('SB507', 'DEL', 'GOI', now()::date + 3 + interval '10 hours 15 minutes', now()::date + 3 + interval '12 hours 45 minutes', 'ATR 72', 'scheduled', 5300),
+    ('SB508', 'GOI', 'DEL', now()::date + 3 + interval '19 hours 00 minutes', now()::date + 3 + interval '21 hours 30 minutes', 'ATR 72', 'scheduled', 5150),
+    ('SB509', 'BOM', 'BLR', now()::date + 4 + interval '08 hours 25 minutes', now()::date + 4 + interval '10 hours 35 minutes', 'Airbus A320neo', 'scheduled', 5900),
+    ('SB510', 'BLR', 'BOM', now()::date + 4 + interval '15 hours 40 minutes', now()::date + 4 + interval '17 hours 50 minutes', 'Airbus A320neo', 'scheduled', 6050),
+    ('SB511', 'BOM', 'HYD', now()::date + 5 + interval '06 hours 55 minutes', now()::date + 5 + interval '08 hours 55 minutes', 'Boeing 737 MAX', 'scheduled', 5600),
+    ('SB512', 'HYD', 'BOM', now()::date + 5 + interval '17 hours 25 minutes', now()::date + 5 + interval '19 hours 25 minutes', 'Boeing 737 MAX', 'delayed', 5750),
+    ('SB513', 'BOM', 'GOI', now()::date + 6 + interval '09 hours 10 minutes', now()::date + 6 + interval '10 hours 45 minutes', 'ATR 72', 'scheduled', 4300),
+    ('SB514', 'GOI', 'BOM', now()::date + 6 + interval '20 hours 20 minutes', now()::date + 6 + interval '21 hours 55 minutes', 'ATR 72', 'scheduled', 4100),
+    ('SB515', 'BLR', 'HYD', now()::date + 7 + interval '11 hours 05 minutes', now()::date + 7 + interval '12 hours 50 minutes', 'Airbus A321neo', 'scheduled', 4700),
+    ('SB516', 'HYD', 'BLR', now()::date + 7 + interval '18 hours 40 minutes', now()::date + 7 + interval '20 hours 25 minutes', 'Airbus A321neo', 'scheduled', 4850),
+    ('SB517', 'BLR', 'GOI', now()::date + 8 + interval '07 hours 30 minutes', now()::date + 8 + interval '09 hours 25 minutes', 'ATR 72', 'scheduled', 4950),
+    ('SB518', 'GOI', 'BLR', now()::date + 8 + interval '14 hours 45 minutes', now()::date + 8 + interval '16 hours 40 minutes', 'ATR 72', 'boarding', 5050),
+    ('SB519', 'HYD', 'GOI', now()::date + 8 + interval '09 hours 00 minutes', now()::date + 8 + interval '10 hours 30 minutes', 'ATR 72', 'scheduled', 3900),
+    ('SB520', 'GOI', 'HYD', now()::date + 8 + interval '16 hours 15 minutes', now()::date + 8 + interval '17 hours 45 minutes', 'ATR 72', 'scheduled', 4050)
   returning id
 ),
 seat_rows as (
