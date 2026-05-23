@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Plane } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Field, Input } from "@/components/ui/Input";
@@ -18,6 +18,12 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get("registered") === "1") {
+      toast("Account created. You can log in now.", "success");
+    }
+  }, [searchParams]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -36,7 +42,7 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#0C1445] to-[#0EA5E9] p-6">
+    <main className="flex min-h-screen items-center justify-center bg-linear-to-br from-[#0C1445] to-[#0EA5E9] p-6">
       <form onSubmit={submit} className="sky-card w-full max-w-md rounded-2xl p-8">
         <div className="mb-8 text-center">
           <Plane className="mx-auto h-10 w-10 text-[#0EA5E9]" />

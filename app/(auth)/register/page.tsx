@@ -8,9 +8,12 @@ import { Button } from "@/components/ui/Button";
 import { Field, Input } from "@/components/ui/Input";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "@/components/ui/Toast";
+import { useUserStore } from "@/lib/store/userStore";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const setSession = useUserStore((state) => state.setSession);
+  const setUser = useUserStore((state) => state.setUser);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,18 +22,36 @@ export default function RegisterPage() {
     event.preventDefault();
     setLoading(true);
     const supabase = createClient();
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/login?registered=1`,
+      },
+    });
     setLoading(false);
     if (error) {
-      toast(error.message.includes("already") ? "That email is already registered." : "Couldn't create the account. Try once more.", "error");
+      const message = error.message.includes("already")
+        ? "That email is already registered."
+        : error.message;
+      toast(message, "error");
       return;
     }
-    toast("Account created. You can log in now.", "success");
-    router.push("/login");
+
+    if (data.session && data.user) {
+      setSession(data.session);
+      setUser(data.user);
+      toast("Account created. Continuing to SkyBook.", "success");
+      router.push("/search");
+      return;
+    }
+
+    toast("Account created. Check your email, then log in.", "success");
+    router.push("/login?registered=1");
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#0C1445] to-[#0EA5E9] p-6">
+    <main className="flex min-h-screen items-center justify-center bg-linear-to-br from-[#0C1445] to-[#0EA5E9] p-6">
       <form onSubmit={submit} className="sky-card w-full max-w-md rounded-2xl p-8">
         <div className="mb-8 text-center">
           <Plane className="mx-auto h-10 w-10 text-[#0EA5E9]" />
